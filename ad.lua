@@ -1,56 +1,80 @@
+-- Code based off of Jerzy Karczmarczuk's Haskell implementation,
+-- found in Functional Differentation of Computer Programs
+-- https://karczmarczuk.users.greyc.fr/arpap/diffalg.pdf
+
+-- Thanks to Tim Zakian for the paper suggestion.
+
+-- Metatable that overloads the builtin operators
 mt = {
-  __add = function (d1, d2)
-    return {x = d1.x + d2.x, dx = d1.dx + d2.dx}
-  end
-  ,
-  __sub = function (d1, d2)
-    return {x = d1.x - d2.x, dx = d1.dx - d2.dx}
-  end
-  ,
-  __mul = function (d1, d2)
-    return {x = d1.x * d2.x ,
-            dx = (d1.x * d2.dx) + (d1.dx * d2.x)}
-  end
-  ,
-  __div = function (d1, d2)
-    return {x = d1.x / d2.x,
-            dx = ((d1.dx * d2.x) - (d1.x * d2.dx))
-              / (d2.x * d2.x)}
-  end
-  ,
-  __unm = function (d)
-    return {x = -1 * d.x, dx = -1 * d.dx}
-  end
+    __add = function (d1, d2)
+        return {x = d1.x + d2.x, dx = d1.dx + d2.dx}
+    end
+    ,
+    __sub = function (d1, d2)
+        return {x = d1.x - d2.x, dx = d1.dx - d2.dx}
+    end
+    ,
+    __mul = function (d1, d2)
+        return {x = d1.x * d2.x ,
+        dx = (d1.x * d2.dx) + (d1.dx * d2.x)}
+    end
+    ,
+    __div = function (d1, d2)
+        return {x = d1.x / d2.x,
+        dx = ((d1.dx * d2.x) - (d1.x * d2.dx))
+        / (d2.x * d2.x)}
+    end
+    ,
+    __unm = function (d)
+        return {x = -1 * d.x, dx = -1 * d.dx}
+    end
 }
+
+function recip (d)
+    return {x = 1/d.x, dx = (1 / d.x)^2 * (-1 * d.dx)}
+end
 
 -- setmetatable returns its first argument
 function const (n)
-  return setmetatable({x = n, dx = 0}, mt)
+    return setmetatable({x = n, dx = 0}, mt)
 end
 
 function var (n)
-  return setmetatable({x = n, dx = 1.0}, mt)
+    return setmetatable({x = n, dx = 1.0}, mt)
 end
 
 function dlift (func, deriv)
-  return function (d)
-    return setmetatable({x = func(d.x), dx = d.dx * deriv(d.x)}, mt)
-  end
+    return function (d)
+        return setmetatable({x = func(d.x), dx = d.dx * deriv(d.x)}, mt)
+    end
 end
 
 function exp(x)
-  return dlift(math.exp, math.exp)(x)
+    return dlift(math.exp, math.exp)(x)
 end
 
 function sin(x)
-  return dlift(math.sin, math.cos)(x)
+    return dlift(math.sin, math.cos)(x)
 end
 
 function cos(x)
-  return dlift(math.cos, function (x)
-                           return -1 * math.sin(x)
-                       end)(x)
+    return dlift(math.cos, function (x)
+        return -1 * math.sin(x)
+    end)(x)
 end
+
+
+function log(x)
+    return dlift(math.log, function (x)
+                            return 1/x end)(x)
+end
+
+function sqrt (x)
+    return dlift(math.sqrt, function(x)
+                                return 0.5/math.sqrt(x)
+                            end)(x)
+end
+
 
 -- The returned values in this program aren't as nice as the way they
 -- are handled in Racket. This is something I need to fix. There are
@@ -82,3 +106,4 @@ end
 -- > print(f(var(1)).dx)
 -- 0.54030230586814
 
+ 
