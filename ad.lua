@@ -7,25 +7,34 @@
 -- Metatable that overloads the builtin operators
 mt = {
     __add = function (d1, d2)
+        if type(d1) == "number" then d1 = const(d1) end
+        if type(d2) == "number" then d2 = const(d1) end
         return {x = d1.x + d2.x, dx = d1.dx + d2.dx}
     end
     ,
     __sub = function (d1, d2)
+        if type(d1) == "number" then d1 = const(d1) end
+        if type(d2) == "number" then d2 = const(d1) end
         return {x = d1.x - d2.x, dx = d1.dx - d2.dx}
     end
     ,
     __mul = function (d1, d2)
+        if type(d1) == "number" then d1 = const(d1) end
+        if type(d2) == "number" then d2 = const(d1) end
         return {x = d1.x * d2.x ,
         dx = (d1.x * d2.dx) + (d1.dx * d2.x)}
     end
     ,
     __div = function (d1, d2)
+        if type(d1) == "number" then d1 = const(d1) end
+        if type(d2) == "number" then d2 = const(d1) end
         return {x = d1.x / d2.x,
         dx = ((d1.dx * d2.x) - (d1.x * d2.dx))
         / (d2.x * d2.x)}
     end
     ,
     __unm = function (d)
+        if type(d) == "number" then d = const(d) end
         return {x = -1 * d.x, dx = -1 * d.dx}
     end
 }
