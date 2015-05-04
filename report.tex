@@ -1,0 +1,68 @@
+\documentclass{article}
+
+\author{Jaime Guerrero}
+\date{May 6, 2015}
+\title{Autodifferentiation in Racket and Lua}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Differentiation of functions plays a foundational role in countless domains,
+including mathematics, engineering, economics, and various social sciences.
+
+
+\section{Autodifferentiation Overview}
+The two primary forms of automatic differentiation, reverse mode and forward
+mode, both exploit the compositional nature of the chain rule.  The forms differ
+in the way they approach the multiplications within the chain rule; forward mode
+goes from right to left, while reverse mode goes from left to right.  Forward
+mode is the more straightforward of the two, and it has been implemented here.
+This implementation does not allow for functions with mulitple unknows, but can
+calculate partial derivatives with respect to one unknown.  What is special
+about reverse mode? This is a numerical technique.
+
+
+\section{A Haskell Implementation}
+The bulk of this code is inspired from Jerzy Karczmarczuk's Haskell
+implementation SOURCE.  In his paper, Karczmarczuk exploits Haskell's lazy
+evaluation to create a sophisticated system.  However, the first part of the
+paper works perfectly well in a strict setting.  His implementation utilizes the
+most common technique for forward mode differentatino: an algebra of
+\textit{dual numbers}.  A dual number is a pair of numbers, wherein the first
+component is a function's value at a point, and the second component is the
+function's derivative at that same point. In order to instantiate a dual number,
+a higher-order function \texttt{dlift} function is given some function and its
+derivative.  When provided with a point, \texttt{dlift}'s function creates
+a dual and calculates its derivative.
+
+The use of dual numbers is a concise way to describe a function's value and
+derivative.  But the above description of differentiation amounts to nothing
+more than a large table that maps functions to their derivatives.  In order for
+more sophisticated calculations, standard arithmetic operators must be
+overloaded to work upon the dual numbers that \texttt{dlift} generates.  And
+since duals already carry derivatives along with them, the operators are where
+the standard derivative rules of calculus can be encoded.  For example,
+\texttt{*} takes two dual numbers and returns a third, where the returned value
+consists of multiplied function values and an encoding of the product rule as
+its second component.  It is in this overloading that we can find the
+derivatives of all functions consisting of elementary operators upon algebraic
+and trigonometric functions.
+
+\section{Scheme and Lua Implementations}
+Operator overloading via explicit renaming
+Operator overloading via metatables
+
+\section{An Example}
+
+\section{Takeaways}
+\subsection{Operator overloading is DSL construction}
+Hudak's paper?
+At the highest level, we can understand operator overloading as a way to implement a DSL.  This is particularly useful in our case, where both implementations (more or less) retain their mathematical flavor.
+
+\subsection{Derivative Construction as Metaprogramming}
+
+\subsection{Optimizations}
+
+
+\end{document}

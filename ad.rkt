@@ -10,7 +10,7 @@
                     (cos rcos)
                     (log rlog)
                     (sqrt rsqrt)
-                    (expt rexpt))
+                    (expt rexpt)))
 
 (provide dual dual-x dual-dx + - * / recip const var dlift exp sin cos log sqrt)
 
