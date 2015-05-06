@@ -1,18 +1,21 @@
 #lang racket/base
 
 (require (rename-in racket/base
-                    (+ r+)
-                    (- r-)
-                    (* r*)
-                    (/ r/)
-                    (exp rexp)
-                    (sin rsin)
-                    (cos rcos)
-                    (log rlog)
+                    (+    r+)
+                    (-    r-)
+                    (*    r*)
+                    (/    r/)
+                    (exp  rexp)
+                    (sin  rsin)
+                    (cos  rcos)
+                    (log  rlog)
                     (sqrt rsqrt)
                     (expt rexpt)))
 
-(provide dual dual-x dual-dx + - * / recip const var dlift exp sin cos log sqrt)
+(provide dual dual-x dual-dx
+         r+ r- r* r/ rexp rsin rcos rlog rsqrt
+         +  -  *  /  exp  sin  cos  log  sqrt
+         recip const var dlift )
 
 ;; Code based off of Jerzy Karczmarczuk's Haskell implementation,
 ;; found in Functional Differentation of Computer Programs
@@ -131,4 +134,4 @@
                  (r/ 0.5 (rsqrt x)))))
 
 ;;; Because this program implements an algebra of dual numbers, the returned
-;;; value of dlift must itself be a dual.  Consequently, to 
+;;; value of dlift must itself be a dual.  Consequently, to
